@@ -127,9 +127,70 @@ Variable	SSH_HOST	IP do seu servidor Docker Swarm
 Secret	SSH_KEY	Chave RSA Privada (Invisível para o aluno)
 Access	Colaborador	O GitHub do aluno com acesso ao push
 
-Exportar para as Planilhas
+🛠️ Script de Automação: CriarProjetoAluno.ps1
+Copie o código abaixo e salve-o como CriarProjetoAluno.ps1.
 
-A Palavra:
-"A automação é o alicerce da escala. Ao transformar a criação de um ambiente em um conjunto de comandos, você garante que o 40º aluno terá exatamente a mesma qualidade de infraestrutura que o primeiro. Onde há ordem no comando, há paz na execução."
+PowerShell
 
-Gostaria que eu montasse agora o arquivo deploy.sh que o aluno vai usar dentro do GitHub Actions para ler essas variáveis e criar o serviço no Docker?
+# --- Configurações Mestres do Inetz ---
+$ORG_NAME = "inetz-solucoes"
+$SSH_HOST = "200.xxx.xxx.xxx"  # Altere para o IP do seu srv-docker-master
+$SSH_USER = "root"             # Usuário de acesso ao servidor
+$SSH_PORT = "22"               # Porta SSH padrão
+
+# --- Entrada de Dados ---
+$ALUNO_RA = Read-Host "Digite o RA do Aluno (ex: 12345)"
+$GH_USER = Read-Host "Digite o Usuário GitHub do Aluno"
+$PROJETO_NOME = "projeto-backend-v1"
+
+$REPO_NAME = "projeto-inetz-$ALUNO_RA"
+
+Write-Host "`n🚀 Iniciando criação do ecossistema para: $REPO_NAME" -ForegroundColor Cyan
+
+# 1. Criar o Repositório Privado
+gh repo create "$ORG_NAME/$REPO_NAME" --private --add-readme
+
+# 2. Configurar Variáveis de Ambiente (Variables)
+Write-Host "📦 Definindo variáveis de ambiente..." -ForegroundColor Yellow
+gh variable set ALUNO_RA --body "$ALUNO_RA" --repo "$ORG_NAME/$REPO_NAME"
+gh variable set ALUNO_PROJETO --body "$PROJETO_NOME" --repo "$ORG_NAME/$REPO_NAME"
+gh variable set SSH_HOST --body "$SSH_HOST" --repo "$ORG_NAME/$REPO_NAME"
+gh variable set SSH_USER --body "$SSH_USER" --repo "$ORG_NAME/$REPO_NAME"
+gh variable set SSH_PORT --body "$SSH_PORT" --repo "$ORG_NAME/$REPO_NAME"
+
+# 3. Configurar Segredos (Secrets)
+Write-Host "🔐 Injetando chaves de segurança..." -ForegroundColor Yellow
+# Assume que sua chave está no caminho padrão do Windows
+$KEY_PATH = "$HOME\.ssh\id_rsa"
+if (Test-Path $KEY_PATH) {
+    gh secret set SSH_KEY --repo "$ORG_NAME/$REPO_NAME" < $KEY_PATH
+} else {
+    Write-Host "❌ Erro: Chave SSH não encontrada em $KEY_PATH" -ForegroundColor Red
+}
+
+# 4. Adicionar Colaboradores
+Write-Host "👥 Adicionando Aluno e Professores..." -ForegroundColor Yellow
+# Aluno como "push" (escreve mas não deleta o repo)
+gh api -X PUT "/repos/$ORG_NAME/$REPO_NAME/collaborators/$GH_USER" -f permission=push
+# Marcelo Réu como Admin
+gh api -X PUT "/repos/$ORG_NAME/$REPO_NAME/collaborators/marcelo-reu" -f permission=admin
+
+Write-Host "`n✅ Ecossistema do Aluno $ALUNO_RA criado com sucesso!" -ForegroundColor Green
+Write-Host "🔗 Link: https://github.com/$ORG_NAME/$REPO_NAME" -ForegroundColor Cyan
+📝 O que este script faz por você:
+Identidade Única: Usa o ALUNO_RA para batizar o repositório e as pastas internas.
+
+Conexão Blindada: Seta SSH_HOST, SSH_USER e SSH_PORT para que o GitHub saiba onde o seu Docker Swarm está ouvindo.
+
+Chave Mestra: Pega a sua id_rsa do Windows e a transforma no segredo SSH_KEY dentro do GitHub (o aluno nunca verá o conteúdo dessa chave).
+
+Gestão de Equipe: Já coloca o aluno no projeto e garante que o Marcelo Réu tenha acesso administrativo para te ajudar na correção.
+
+💡 Como executar no Windows:
+Abra o PowerShell na pasta onde salvou o arquivo.
+
+Se o Windows bloquear a execução de scripts, rode uma vez:
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+Execute o script:
+.\CriarProjetoAluno.ps1
