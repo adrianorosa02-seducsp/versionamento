@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Avaliação Inetz - IA Generativa</title>
+    <style>
+        :root { --primary: #2563eb; --success: #16a34a; --wrong: #dc2626; --bg: #f1f5f9; --text: #1e293b; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); padding: 20px; color: var(--text); }
+        .container { max-width: 850px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        #quiz-screen, #final-screen { display: none; }
+        .login-box { text-align: center; padding: 20px; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 2px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .question { margin-bottom: 40px; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; }
+        .options { list-style: none; padding: 0; }
+        .options li { margin: 10px 0; padding: 12px; border: 2px solid #cbd5e1; border-radius: 6px; cursor: pointer; transition: 0.2s; }
+        .options li.selected { border-color: var(--primary); background: #eff6ff; }
+        .options li.correct-reveal { background: #dcfce7; border-color: var(--success); font-weight: bold; }
+        .options li.wrong-reveal { background: #fee2e2; border-color: var(--wrong); }
+        button { background: var(--primary); color: white; border: none; padding: 15px 25px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; margin-top: 10px; }
+        button:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .verify-btn { background: #64748b; width: auto; margin-bottom: 10px; }
+        #final-submit-btn { background: #0f172a; font-size: 1.2em; margin-top: 30px; }
+        .explanation { display: none; margin-top: 15px; padding: 15px; background: #f8fafc; border-left: 5px solid var(--primary); font-size: 0.95em; }
+        .counter { font-weight: bold; color: var(--primary); margin-bottom: 10px; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="login-screen" class="login-box">
+        <h1>Avaliação: IA Generativa</h1>
+        <p>Inetz Ecosystem - Sistemas Inteligentes</p>
+        <input type="text" id="nome" placeholder="Nome Completo" required>
+        <input type="text" id="ra" placeholder="Seu RA" required>
+        <button onclick="startQuiz()">Iniciar Avaliação</button>
+    </div>
+
+    <div id="quiz-screen">
+        <h3 id="user-display"></h3>
+        <span class="counter" id="progresso">Progresso: 0/10</span>
+
+        <div class="question" id="q1" data-correct="[2]">
+            <p><strong>1. Qual a função da rede Discriminadora em uma GAN?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Criar novas imagens do zero</li><li onclick="sel(this)">Comprimir os dados para o espaço latente</li><li onclick="sel(this)">Distinguir se os dados são reais ou criados pelo Gerador</li></ul>
+            <button class="verify-btn" onclick="check('q1')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> O discriminador atua como um "juiz" no processo adversarial.</div>
+        </div>
+
+        <div class="question" id="q2" data-correct="[1]">
+            <p><strong>2. Qual arquitetura é a base do ChatGPT e do BERT?</strong></p>
+            <ul class="options"><li onclick="sel(this)">VAEs (Autoencoders)</li><li onclick="sel(this)">Transformers</li><li onclick="sel(this)">Redes Neurais Convolucionais</li></ul>
+            <button class="verify-btn" onclick="check('q2')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> Transformers utilizam atenção para processar sequências de texto.</div>
+        </div>
+
+        <div class="question" id="q3" data-correct="[0]">
+            <p><strong>3. O projeto 'ThisPersonDoesNotExist' é um exemplo clássico de:</strong></p>
+            <ul class="options"><li onclick="sel(this)">GAN (Rede Generativa Adversarial)</li><li onclick="sel(this)">Compressão de imagem via VAE</li><li onclick="sel(this)">Processamento de linguagem natural</li></ul>
+            <button class="verify-btn" onclick="check('q3')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> GANs são excelentes para gerar imagens realistas como rostos.</div>
+        </div>
+
+        <div class="question" id="q4" data-correct="[2]">
+            <p><strong>4. Qual a principal utilidade dos VAEs (Autoencoders Variacionais)?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Criação de deepfakes de voz</li><li onclick="sel(this)">Enganar o discriminador em ciclos</li><li onclick="sel(this)">Compressão e reconstrução de imagens</li></ul>
+            <button class="verify-btn" onclick="check('q4')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> VAEs focam em aprender e reconstruir a estrutura latente dos dados.</div>
+        </div>
+
+        <div class="question" id="q5" data-correct="[1]">
+            <p><strong>5. O mecanismo de 'Atenção' nos Transformers serve para:</strong></p>
+            <ul class="options"><li onclick="sel(this)">Monitorar se o usuário está focado</li><li onclick="sel(this)">Ponderar a importância de diferentes partes da sequência</li><li onclick="sel(this)">Reduzir o consumo de energia da GPU</li></ul>
+            <button class="verify-btn" onclick="check('q5')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> A atenção permite entender o contexto global de uma frase.</div>
+        </div>
+
+        <div class="question" id="q6" data-correct="[0,1]">
+            <p><strong>6. Quais ferramentas utilizam IA Generativa para criar imagens? (Múltipla)</strong></p>
+            <ul class="options"><li onclick="sel(this)">Midjourney</li><li onclick="sel(this)">DALL-E</li><li onclick="sel(this)">PostgreSQL</li></ul>
+            <button class="verify-btn" onclick="check('q6')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> Midjourney e DALL-E são modelos de difusão/geração de arte.</div>
+        </div>
+
+        <div class="question" id="q7" data-correct="[2]">
+            <p><strong>7. No processo adversarial, o que acontece com o Gerador?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Ele para de funcionar se o discriminador errar</li><li onclick="sel(this)">Ele apenas copia o dataset original</li><li onclick="sel(this)">Ele aprende a criar dados mais realistas para evitar ser detectado</li></ul>
+            <button class="verify-btn" onclick="check('q7')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> O Gerador melhora por tentativa e erro contra o discriminador.</div>
+        </div>
+
+        <div class="question" id="q8" data-correct="[1]">
+            <p><strong>8. Qual é o principal risco ético mencionado no conteúdo?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Falta de espaço em disco</li><li onclick="sel(this)">Criação de deepfakes e desinformação</li><li onclick="sel(this)">IA aprendendo a programar sozinha</li></ul>
+            <button class="verify-btn" onclick="check('q8')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> Deepfakes desafiam a percepção da realidade.</div>
+        </div>
+
+        <div class="question" id="q9" data-correct="[0]">
+            <p><strong>9. Como a IA Generativa auxilia em projetos CAD?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Gerando variações de designs e estruturas</li><li onclick="sel(this)">Limpando o histórico do navegador</li><li onclick="sel(this)">Traduzindo manuais técnicos</li></ul>
+            <button class="verify-btn" onclick="check('q9')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> A IA pode otimizar formas e sugerir melhorias em engenharia.</div>
+        </div>
+
+        <div class="question" id="q10" data-correct="[1]">
+            <p><strong>10. O que é um espaço latente em VAEs?</strong></p>
+            <ul class="options"><li onclick="sel(this)">Uma sala de servidores física</li><li onclick="sel(this)">Uma representação comprimida e essencial dos dados</li><li onclick="sel(this)">O tempo de espera entre o prompt e a resposta</li></ul>
+            <button class="verify-btn" onclick="check('q10')">Verificar</button>
+            <div class="explanation"><strong>Palavra:</strong> É onde a IA guarda as características fundamentais do que aprendeu.</div>
+        </div>
+
+        <button id="final-submit-btn" disabled onclick="enviarTudo()">Finalizar e Enviar para n8n</button>
+    </div>
+
+    <div id="final-screen" style="text-align: center;">
+        <h2 id="final-msg">Sincronizando com o n8n...</h2>
+    </div>
+</div>
+
+<script>
+    let dadosFinal = { nome: "", ra: "", acertos: 0, respostas_aluno: {} };
+    let totalRespondidas = 0;
+
+    function startQuiz() {
+        dadosFinal.nome = document.getElementById('nome').value;
+        dadosFinal.ra = document.getElementById('ra').value;
+        if(!dadosFinal.nome || !dadosFinal.ra) return alert("Por favor, preencha Nome e RA.");
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        document.getElementById('user-display').innerText = `Estudante: ${dadosFinal.nome}`;
+    }
+
+    function sel(el) {
+        if(el.parentElement.dataset.locked) return;
+        el.classList.toggle('selected');
+    }
+
+    function check(id) {
+        const qDiv = document.getElementById(id);
+        if(qDiv.dataset.locked) return;
+
+        const opts = qDiv.querySelectorAll('li');
+        const correct = JSON.parse(qDiv.dataset.correct);
+        let marcadas = [];
+
+        opts.forEach((opt, i) => { if(opt.classList.contains('selected')) marcadas.push(i); });
+
+        dadosFinal.respostas_aluno[id] = marcadas;
+        qDiv.dataset.locked = "true";
+        qDiv.querySelector('.verify-btn').disabled = true;
+
+        const acertou = marcadas.length === correct.length && marcadas.every(v => correct.includes(v));
+        if(acertou) dadosFinal.acertos++;
+
+        opts.forEach((opt, i) => {
+            if(correct.includes(i)) opt.classList.add('correct-reveal');
+            else if(opt.classList.contains('selected')) opt.classList.add('wrong-reveal');
+            opt.classList.remove('selected');
+        });
+
+        qDiv.querySelector('.explanation').style.display = 'block';
+        totalRespondidas++;
+        document.getElementById('progresso').innerText = `Progresso: ${totalRespondidas}/10`;
+
+        if(totalRespondidas === 10) {
+            const b = document.getElementById('final-submit-btn');
+            b.disabled = false;
+            b.innerText = "ENVIAR AVALIAÇÃO AGORA";
+        }
+    }
+
+    async function enviarTudo() {
+        const btn = document.getElementById('final-submit-btn');
+        btn.disabled = true;
+        btn.innerText = "Enviando dados...";
+
+        const payload = {
+            ...dadosFinal,
+            key_alunos: "key_alunos",
+            modulo: "IA Generativa",
+            timestamp: new Date().toISOString()
+        };
+
+        try {
+            await fetch('https://n8n.inetz.com.br/webhook-test/avalia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            document.getElementById('quiz-screen').style.display = 'none';
+            document.getElementById('final-screen').style.display = 'block';
+            document.getElementById('final-msg').innerHTML = `✅ Avaliação Concluída!<br>Acertos: ${payload.acertos}/10`;
+        } catch (e) {
+            alert("Erro ao conectar com o n8n. Verifique sua rede.");
+            btn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>
