@@ -1,8 +1,8 @@
 # versionamento
 Repositório para Materiais da disciplina Versionamento Seduc-SP 
 
-Link para Script instalação
-https://lab.inetz.com.br/devmaker/hotel/seduc/config_ambiente_python.ps1
+comando para Script instalação
+iex (irm https://lab.inetz.com.br/devmaker/hotel/seduc/config_ambiente_python.ps1)
 
 📑 Guia de Aula: Versionamento com Git
 Tópicos: Comandos Essenciais, Estudo de Caso e Prática de Conflitos
