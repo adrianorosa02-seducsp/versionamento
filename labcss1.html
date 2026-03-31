@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laboratório CSS Profissional</title>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:20px;
+    background:#ececec;
+}
+
+.container{
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.controls{
+    width:350px;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.15);
+}
+
+.controls label{
+    display:block;
+    margin-top:10px;
+    font-size:14px;
+}
+
+.controls input,
+.controls select{
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+}
+
+.preview{
+    flex:1;
+    min-width:500px;
+    height:600px;
+    background:white;
+    border:2px dashed #999;
+    position:relative;
+    overflow:auto;
+    padding:20px;
+}
+
+#box{
+    width:200px;
+    height:100px;
+    background:#4CAF50;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    position:relative;
+    transition:all 0.3s ease;
+}
+</style>
+</head>
+<body>
+
+<h2>🚀 Laboratório CSS Profissional</h2>
+
+<div class="container">
+
+<div class="controls">
+
+<label>Display</label>
+<select id="display">
+<option>flex</option>
+<option>block</option>
+<option>inline-block</option>
+<option>grid</option>
+</select>
+
+<label>Position</label>
+<select id="position">
+<option>relative</option>
+<option>absolute</option>
+<option>fixed</option>
+<option>sticky</option>
+</select>
+
+<label>Width</label>
+<input id="width" value="200px">
+
+<label>Height</label>
+<input id="height" value="100px">
+
+<label>Margin</label>
+<input id="margin" value="10px">
+
+<label>Padding</label>
+<input id="padding" value="10px">
+
+<label>Top</label>
+<input id="top" value="0px">
+
+<label>Left</label>
+<input id="left" value="0px">
+
+<label>Border Radius</label>
+<input id="radius" value="10px">
+
+<label>Box Shadow</label>
+<input id="shadow" value="5px 5px 10px rgba(0,0,0,0.3)">
+
+<label>Background Color</label>
+<input id="bg" value="#4CAF50">
+
+<label>Rotate</label>
+<input id="rotate" value="0deg">
+
+<label>Overflow</label>
+<select id="overflow">
+<option>visible</option>
+<option>hidden</option>
+<option>scroll</option>
+<option>auto</option>
+</select>
+
+<label>Justify Content</label>
+<select id="justify">
+<option>center</option>
+<option>flex-start</option>
+<option>flex-end</option>
+<option>space-between</option>
+<option>space-around</option>
+</select>
+
+<label>Align Items</label>
+<select id="align">
+<option>center</option>
+<option>flex-start</option>
+<option>flex-end</option>
+<option>stretch</option>
+</select>
+
+<button onclick="applyCSS()" style="margin-top:15px;width:100%;padding:10px;">
+Aplicar CSS
+</button>
+
+</div>
+
+<div class="preview">
+    <div id="box">Elemento CSS</div>
+</div>
+
+</div>
+
+<script>
+function applyCSS(){
+    const box = document.getElementById('box');
+
+    box.style.display = display.value;
+    box.style.position = position.value;
+    box.style.width = width.value;
+    box.style.height = height.value;
+    box.style.margin = margin.value;
+    box.style.padding = padding.value;
+    box.style.top = top.value;
+    box.style.left = left.value;
+    box.style.borderRadius = radius.value;
+    box.style.boxShadow = shadow.value;
+    box.style.background = bg.value;
+    box.style.transform = 'rotate(' + rotate.value + ')';
+    box.style.overflow = overflow.value;
+    box.style.justifyContent = justify.value;
+    box.style.alignItems = align.value;
+}
+</script>
+
+</body>
+</html>
